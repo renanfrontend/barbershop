@@ -5,20 +5,20 @@ import { db } from "../_lib/prisma";
 import Search from "../(home)/_components/search";
 
 interface BarbershopsPageProps {
-  searchParams: {
-    search?: string;
-  };
+  searchParams: Promise<{ search?: string }>;
 }
 
 const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
-  if (!searchParams.search) {
+  const { search } = await searchParams;
+  if (!search) {
     return redirect("/");
   }
 
   const barbershops = await db.barbershop.findMany({
     where: {
+      active: true,
       name: {
-        contains: searchParams.search,
+        contains: search,
         mode: "insensitive",
       },
     },
@@ -31,11 +31,11 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
       <div className="mx-auto max-w-6xl px-5 py-6 flex flex-col gap-6">
         <Search
           defaultValues={{
-            search: searchParams.search,
+            search: search,
           }}
         />
 
-        <h1 className="text-gray-400 font-bold text-xs uppercase">Resultados para &quot;{searchParams.search}&quot;</h1>
+        <h1 className="text-gray-400 font-bold text-xs uppercase">Resultados para &quot;{search}&quot;</h1>
 
         {barbershops.length === 0 && <p role="status" className="rounded-xl border p-6 text-gray-400">Nenhuma barbearia encontrada. Tente outro nome.</p>}
 

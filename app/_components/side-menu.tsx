@@ -30,8 +30,8 @@ const SideMenu = () => {
             <h2 className="font-bold">{data.user.name}</h2>
           </div>
 
-          <Button variant="secondary" size="icon">
-            <LogOutIcon onClick={handleLogoutClick} />
+          <Button variant="secondary" size="icon" onClick={handleLogoutClick} aria-label="Sair da conta">
+            <LogOutIcon />
           </Button>
         </div>
       ) : (
@@ -55,6 +55,7 @@ const SideMenu = () => {
           </Link>
         </Button>
 
+        {(data?.user as { canManage?: boolean } | undefined)?.canManage && <Button variant="outline" className="justify-start" asChild><Link href="/admin">Gerenciar barbearia</Link></Button>}
         {data?.user && (
           <Button variant="outline" className="justify-start" asChild>
             <Link href="/bookings">

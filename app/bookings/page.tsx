@@ -15,11 +15,13 @@ const BookingsPage = async () => {
   const [confirmedBookings, finishedBookings] = await Promise.all([
     db.booking.findMany({
       where: {
+        status: "CONFIRMED",
         userId: (session.user as any).id,
         date: {
           gte: new Date(),
         },
       },
+      orderBy: { date: "asc" },
       include: {
         service: true,
         barbershop: true,
@@ -28,10 +30,9 @@ const BookingsPage = async () => {
     db.booking.findMany({
       where: {
         userId: (session.user as any).id,
-        date: {
-          lt: new Date(),
-        },
+        OR: [{ date: { lt: new Date() } }, { status: { not: "CONFIRMED" } }],
       },
+      orderBy: { date: "asc" },
       include: {
         service: true,
         barbershop: true,
@@ -46,6 +47,7 @@ const BookingsPage = async () => {
       <div className="px-5 py-6">
         <h1 className="text-xl font-bold mb-6">Agendamentos</h1>
 
+        {confirmedBookings.length === 0 && <p className="text-sm text-gray-400 mb-6">Você não tem agendamentos futuros confirmados.</p>}
         {confirmedBookings.length > 0 && (
           <>
             <h2 className="text-gray-400 uppercase font-bold text-sm mb-3">Confirmados</h2>
@@ -60,7 +62,7 @@ const BookingsPage = async () => {
 
         {finishedBookings.length > 0 && (
           <>
-            <h2 className="text-gray-400 uppercase font-bold text-sm mt-6 mb-3">Finalizados</h2>
+            <h2 className="text-gray-400 uppercase font-bold text-sm mt-6 mb-3">Histórico</h2>
 
             <div className="flex flex-col gap-3">
               {finishedBookings.map((booking) => (
