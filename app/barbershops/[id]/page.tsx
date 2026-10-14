@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { db } from "@/app/_lib/prisma";
 import BarbershopInfo from "./_components/barbershop-info";
 import ServiceItem from "./_components/service-item";
@@ -15,8 +16,7 @@ const BarbershopDetailsPage = async ({ params }: BarbershopDetailsPageProps) => 
   const session = await getServerSession(authOptions);
 
   if (!params.id) {
-    // TODO: redirecionar para home page
-    return null;
+    notFound();
   }
 
   const barbershop = await db.barbershop.findUnique({
@@ -29,8 +29,7 @@ const BarbershopDetailsPage = async ({ params }: BarbershopDetailsPageProps) => 
   });
 
   if (!barbershop) {
-    // TODO: redirecionar para home page
-    return null;
+    notFound();
   }
 
   return (

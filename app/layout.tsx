@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "RENANHARD Barber",
-  description: "Reservas em Barbearias",
+  description: "Encontre sua barbearia, escolha seu serviço e agende seu próximo corte com praticidade.",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body className={`${inter.className} dark`}>
         <AuthProvider>
           <div className="flex-1">{children}</div>
