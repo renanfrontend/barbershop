@@ -14,7 +14,10 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async session({ session, user }) {
-      session.user = { ...session.user, id: user.id } as {
+      const managed = await db.barbershop.count({ where: { ownerId: user.id } });
+      const platformAdmin = (process.env.ADMIN_EMAILS ?? "").split(",").map(value => value.trim().toLowerCase()).filter(Boolean).includes(user.email?.toLowerCase() ?? "");
+      session.user = { ...session.user, id: user.id, canManage: managed > 0 || platformAdmin } as {
+        canManage: boolean;
         id: string;
         name: string;
         email: string;
@@ -23,5 +26,6 @@ export const authOptions: AuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXT_AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET ?? process.env.NEXT_AUTH_SECRET,
+  pages: { signIn: "/login", error: "/login" },
 };

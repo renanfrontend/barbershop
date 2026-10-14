@@ -19,6 +19,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   bookings      Booking[]
+  ownedShops    Barbershop[]
 }
 
 model Barbershop {
@@ -26,6 +27,19 @@ model Barbershop {
   name     String
   address  String
   imageUrl String
+  ownerId String?
+  owner User? @relation(fields: [ownerId], references: [id])
+  phone String @default("")
+  description String @default("")
+  timezone String @default("America/Sao_Paulo")
+  openingMinute Int @default(540)
+  closingMinute Int @default(1260)
+  workingDays Int[] @default([1, 2, 3, 4, 5, 6])
+  minimumNoticeMinutes Int @default(60)
+  bookingHorizonDays Int @default(60)
+  cancellationNoticeMinutes Int @default(120)
+  active Boolean @default(true)
+  staff Staff[]
   services Service[]
   bookings Booking[]
 }
@@ -34,6 +48,8 @@ model Service {
   id           String     @id @default(uuid())
   name         String
   price        Decimal    @db.Decimal(10, 2)
+  durationMinutes Int @default(45)
+  active Boolean @default(true)
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
   description  String
@@ -50,7 +66,61 @@ model Booking {
   barbershopId String
   barbershop  Barbershop @relation(fields: [barbershopId], references: [id])
   date        DateTime
+  endDate DateTime
+  status BookingStatus @default(CONFIRMED)
+  price Decimal @db.Decimal(10, 2)
+  serviceName String
+  staffId String
+  staff Staff @relation(fields: [staffId], references: [id])
+  createdAt DateTime @default(now())
+  cancelledAt DateTime?
+  @@index([barbershopId, date])
+  @@index([staffId, date, endDate])
+  @@index([userId, date])
 }
+
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Staff {
+  id String @id @default(cuid())
+  name String
+  active Boolean @default(true)
+  barbershopId String
+  barbershop Barbershop @relation(fields: [barbershopId], references: [id])
+  bookings Booking[]
+  blocks ScheduleBlock[]
+  @@index([barbershopId])
+}
+
+model ScheduleBlock {
+  id String @id @default(cuid())
+  staffId String
+  staff Staff @relation(fields: [staffId], references: [id])
+  start DateTime
+  end DateTime
+  reason String @default("Indisponível")
+  @@index([staffId, start, end])
+}
+
+model EmailDelivery {
+  id String @id @default(cuid())
+  eventKey String @unique
+  recipient String
+  subject String
+  body String
+  state String @default("PENDING")
+  attempts Int @default(0)
+  lastAttemptAt DateTime?
+  lastError String?
+  createdAt DateTime @default(now())
+  sentAt DateTime?
+}
+
 
 model Account {
   id                String  @id @default(cuid())

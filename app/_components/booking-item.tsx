@@ -4,7 +4,8 @@ import { Prisma } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
-import { format, isFuture } from "date-fns";
+import { isFuture } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { ptBR } from "date-fns/locale";
 import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import Image from "next/image";
@@ -37,17 +38,21 @@ interface BookingItemProps {
 const BookingItem = ({ booking }: BookingItemProps) => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
-  const isBookingConfirmed = isFuture(booking.date);
+  const isBookingConfirmed = booking.status === "CONFIRMED" && isFuture(booking.date);
+  const label = booking.status === "CANCELLED" ? "Cancelado" : booking.status === "NO_SHOW" ? "Não compareceu" : isBookingConfirmed ? "Confirmado" : booking.status === "COMPLETED" ? "Concluído" : "Horário encerrado";
+  const canCancel = isBookingConfirmed && new Date(booking.date).getTime() - Date.now() >= booking.barbershop.cancellationNoticeMinutes * 60000;
+  const format = (value: Date, pattern: string, options?: object) => formatInTimeZone(value, booking.barbershop.timezone, pattern, options);
 
   const handleCancelClick = async () => {
     setIsDeleteLoading(true);
 
     try {
-      await cancelBooking(booking.id);
+      const result = await cancelBooking(booking.id);
+      if (!result.ok) { toast.error(result.error); return; }
 
       toast.success("Reserva cancelada com sucesso!");
     } catch (error) {
-      console.error(error);
+      toast.error("Não foi possível cancelar. Tente novamente.");
     } finally {
       setIsDeleteLoading(false);
     }
@@ -60,9 +65,9 @@ const BookingItem = ({ booking }: BookingItemProps) => {
           <CardContent className="py-0 flex px-0">
             <div className="flex flex-col gap-2 py-5 flex-[3] pl-5">
               <Badge variant={isBookingConfirmed ? "default" : "secondary"} className="w-fit">
-                {isBookingConfirmed ? "Confirmado" : "Finalizado"}
+                {label}
               </Badge>
-              <h2 className="font-bold">{booking.service.name}</h2>
+              <h2 className="font-bold">{booking.serviceName}</h2>
 
               <div className="flex items-center gap-2">
                 <Avatar className="h-6 w-6">
@@ -82,7 +87,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                 })}
               </p>
               <p className="text-2xl">{format(booking.date, "dd")}</p>
-              <p className="text-sm">{format(booking.date, "hh:mm")}</p>
+              <p className="text-sm">{format(booking.date, "HH:mm")}</p>
             </div>
           </CardContent>
         </Card>
@@ -114,19 +119,19 @@ const BookingItem = ({ booking }: BookingItemProps) => {
           </div>
 
           <Badge variant={isBookingConfirmed ? "default" : "secondary"} className="w-fit my-3">
-            {isBookingConfirmed ? "Confirmado" : "Finalizado"}
+            {label}
           </Badge>
 
           <Card>
             <CardContent className="p-3 gap-3 flex flex-col">
               <div className="flex justify-between">
-                <h2 className="font-bold">{booking.service.name}</h2>
+                <h2 className="font-bold">{booking.serviceName}</h2>
                 <h3 className="font-bold text-sm">
                   {" "}
                   {Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
-                  }).format(Number(booking.service.price))}
+                  }).format(Number(booking.price))}
                 </h3>
               </div>
 
@@ -141,7 +146,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
 
               <div className="flex justify-between">
                 <h3 className="text-gray-400 text-sm">Horário</h3>
-                <h4 className="text-sm">{format(booking.date, "hh:mm")}</h4>
+                <h4 className="text-sm">{format(booking.date, "HH:mm")}</h4>
               </div>
 
               <div className="flex justify-between">
@@ -160,7 +165,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button disabled={!isBookingConfirmed || isDeleteLoading} className="w-full" variant="destructive">
+                <Button disabled={!canCancel || isDeleteLoading} className="w-full" variant="destructive">
                   Cancelar Reserva
                 </Button>
               </AlertDialogTrigger>
