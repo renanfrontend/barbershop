@@ -79,7 +79,6 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
         serviceId: service.id,
         barbershopId: barbershop.id,
         date: newDate,
-        userId: (data.user as any).id,
       });
 
       setSheetIsOpen(false);
@@ -95,7 +94,7 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
         },
       });
     } catch (error) {
-      console.error(error);
+      toast.error("Não foi possível reservar. Atualize os horários e tente novamente.");
     } finally {
       setSubmitIsLoading(false);
     }

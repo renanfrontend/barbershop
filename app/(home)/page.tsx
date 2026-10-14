@@ -35,7 +35,7 @@ export default async function Home() {
   ]);
 
   return (
-    <div>
+    <div className="mx-auto max-w-6xl">
       <Header />
 
       <div className="px-5 pt-5">
