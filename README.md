@@ -1,4 +1,4 @@
-# RENANHARD Barber
+# RENANHARD Barber ✂️
 
 🇧🇷 [Português](#português) · [English](#english)
 
@@ -6,8 +6,17 @@
 
 Aplicação para encontrar barbearias, entrar com Google e reservar serviços. O aplicativo mantém sua **identidade original em tema escuro com detalhes roxos**. O painel comercial oferece gestão de unidades, profissionais, serviços, disponibilidade e agenda. O código evoluiu a partir de um projeto educacional Full Stack Week.
 
-**Aplicativo original:** https://barbershop-seven-pi.vercel.app
-**Portfólio:** https://www.renanaugusto.com.br/pt-BR/projetos/barbershop
+| Link | Destino |
+| --- | --- |
+| Aplicativo publicado | [barbershop-seven-pi.vercel.app](https://barbershop-seven-pi.vercel.app) |
+| Portfólio | [Conheça o projeto](https://www.renanaugusto.com.br/pt-BR/projetos/barbershop) |
+| Código | [github.com/renanfrontend/barbershop](https://github.com/renanfrontend/barbershop) |
+
+> **Estado da versão comercial:** a aplicação publicada ainda usa o banco existente. Os recursos desta branch precisam da migração descrita em [Publicação segura](#publicação-segura) antes de entrar em produção.
+
+### Tecnologias
+
+Next.js (App Router) · React · TypeScript · Tailwind CSS · NextAuth (Google) · Prisma · PostgreSQL · Nodemailer · Vercel.
 
 ### Fluxos
 
@@ -46,6 +55,12 @@ Configure `MAIL_ENABLED=true`, `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMT
 
 O `next build` **não executa migrações**; isso evita modificar o banco como efeito colateral de um deploy de Preview. Publicar a branch sem migrar o banco causa erro nas consultas que usam as novas colunas.
 
+### Contato e autoria
+
+Desenvolvimento e evolução da aplicação: **Renan Augusto dos Santos**. O footer usa os mesmos canais públicos do [portfólio](https://www.renanaugusto.com.br): [e-mail](mailto:contato@renanaugusto.com.br), [GitHub](https://github.com/renanfrontend/barbershop) e [LinkedIn](https://www.linkedin.com/in/renan-augusto-santos/). Para adaptar o produto à sua barbearia ou conversar sobre implantação, escreva para **contato@renanaugusto.com.br**. Para dúvidas sobre um agendamento em uma unidade, use o telefone exibido na página daquela barbearia.
+
+O projeto teve como ponto de partida um exercício da Full Stack Week. Bibliotecas e materiais de terceiros conservam seus respectivos direitos e licenças.
+
 ### Verificações
 
 ```bash
@@ -69,4 +84,8 @@ DATABASE_URL="postgresql://..." npm run build
 
 RENANHARD Barber retains its original dark and purple UI and Google sign-in. Customers discover barbershops, book a service with a selected professional, and view or cancel appointments. Owners manage their own shop, staff, service catalog, opening hours, time blocks and bookings in `/admin`. An explicitly configured platform administrator onboards owners. Confirmation and cancellation email requires separately configured SMTP credentials; Google sign-in alone does not grant Gmail inbox or sending access.
 
+**Links:** [Live application](https://barbershop-seven-pi.vercel.app) · [Portfolio](https://www.renanaugusto.com.br/pt-BR/projetos/barbershop) · [Source](https://github.com/renanfrontend/barbershop). The commercial features in this branch are not live until the database migration and deployment checks above are complete.
+
 Run `npm ci`, configure `.env.local` from `.env.example`, run `npx prisma migrate deploy` against a local PostgreSQL database and start with `npm run dev`. For production, back up and inspect the database, migrate it before deploying code, verify bookings and ownership, then enable SMTP after a successful delivery test. The example seed is for local use only. Billing and automated reminders are outside the current application.
+
+**Contact:** Renan Augusto dos Santos — [contato@renanaugusto.com.br](mailto:contato@renanaugusto.com.br) · [GitHub](https://github.com/renanfrontend/barbershop) · [LinkedIn](https://www.linkedin.com/in/renan-augusto-santos/). For an existing appointment, contact the barbershop using the phone number on its page. Originally based on an educational Full Stack Week project; third-party materials retain their own licenses.
