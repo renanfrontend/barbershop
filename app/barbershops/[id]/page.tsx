@@ -7,21 +7,20 @@ import { authOptions } from "@/app/_lib/auth";
 
 
 interface BarbershopDetailsPageProps {
-  params: {
-    id?: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 const BarbershopDetailsPage = async ({ params }: BarbershopDetailsPageProps) => {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
-  if (!params.id) {
+  if (!id) {
     notFound();
   }
 
   const barbershop = await db.barbershop.findUnique({
     where: {
-      id: params.id,
+      id,
     },
     include: {
       services: true,
@@ -31,14 +30,15 @@ const BarbershopDetailsPage = async ({ params }: BarbershopDetailsPageProps) => 
   if (!barbershop) {
     notFound();
   }
+  const { services, ...shop } = barbershop;
 
   return (
     <div>
-      <BarbershopInfo barbershop={barbershop} />
+      <BarbershopInfo barbershop={shop} />
 
       <div className="px-5 flex flex-col gap-4 py-6">
-        {barbershop.services.map((service) => (
-          <ServiceItem key={service.id} barbershop={barbershop} service={service} isAuthenticated={!!session?.user} />
+        {services.map((service) => (
+          <ServiceItem key={service.id} barbershop={shop} service={{ ...service, price: Number(service.price) }} isAuthenticated={!!session?.user} />
         ))}
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/app/_components/ui/button";
-import { Calendar } from "@/app/_components/ui/calendar";
+import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/app/_components/ui/card";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/app/_components/ui/sheet";
 import { Barbershop, Booking, Service } from "@prisma/client";
@@ -19,9 +19,11 @@ import { getDayBookings } from "../_actions/get-day-bookings";
 
 interface ServiceItemProps {
   barbershop: Barbershop;
-  service: Service;
+  service: Omit<Service, "price"> & { price: number };
   isAuthenticated: boolean;
 }
+
+const Calendar = dynamic(() => import("@/app/_components/ui/calendar").then(module => module.Calendar), { ssr: false });
 
 const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps) => {
   const router = useRouter();

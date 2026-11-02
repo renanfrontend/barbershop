@@ -1,46 +1,45 @@
-# ✂ Barber Shop
+# RENANHARD Barber ✂️
 
-🇧🇷 **Português** · [English below](#english)
+🇧🇷 [Português](#português) · [English](#english)
 
-Aplicação de descoberta de barbearias e agendamento de serviços, desenvolvida a partir do projeto educacional Full Stack Week. Stack: **Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL e NextAuth**.
+## Português
 
-[Experimentar demonstração](https://renanaugusto.com.br/demos/barbershop/index.html) · [Portfólio](https://renanaugusto.com.br/pt-BR/projetos/barbershop) · [Código](https://github.com/renanfrontend/barbershop)
+Aplicação de descoberta de barbearias e agendamento de serviços, baseada no projeto educacional Full Stack Week. A interface original usa tema escuro e detalhes roxos. O cliente pode entrar com Google, escolher um serviço, reservar um horário e acompanhar seus agendamentos.
 
-## Demonstração pública
+| Link | Destino |
+| --- | --- |
+| Aplicativo | [barbershop-seven-pi.vercel.app](https://barbershop-seven-pi.vercel.app) |
+| Portfólio | [Conheça o projeto](https://www.renanaugusto.com.br/pt-BR/projetos/barbershop) |
+| Código | [github.com/renanfrontend/barbershop](https://github.com/renanfrontend/barbershop) |
 
-A pasta `demo/` contém uma experiência estática independente com layout responsivo, busca por nome/bairro, filtros por serviço, seleção de data/horário e cancelamento. As barbearias são fictícias e as reservas ficam no localStorage do navegador: **não são agendamentos reais**. A demonstração é distribuída também em `public/demos/barbershop/` no portfólio; sincronize os três arquivos ao atualizar a interface.
+> A página antiga `/demos/barbershop/` do portfólio redireciona para o aplicativo original. A pasta `demo/` deste repositório é um protótipo estático legado com dados simulados; não envia reservas reais.
 
-```bash
-python3 -m http.server 8080 --directory demo
-```
+### Tecnologias e funcionalidades
 
-## Aplicação completa
+Next.js (App Router) · React · TypeScript · Tailwind CSS · NextAuth (Google) · Prisma · PostgreSQL · Vercel.
 
-Requer Node.js, PostgreSQL e credenciais OAuth do Google.
+- Busca e listagem de barbearias, serviços e página de detalhes.
+- Entrada com conta Google, reserva e consulta dos agendamentos do usuário.
+- Verificação de sessão e autoria da reserva no servidor.
+- Protótipo estático legado em `demo/`, independente do banco e do login.
+
+### Executar localmente
+
+Requer Node.js, PostgreSQL e credenciais OAuth do Google. Configure as variáveis locais em `.env` a partir de `.env.example`, sem versionar segredos.
 
 ```bash
 npm ci
-cp .env.example .env
-# Preencha .env com suas credenciais locais.
 npx prisma migrate deploy
-npx prisma db seed
 npm run dev
 ```
 
-Cadastre `http://localhost:3000/api/auth/callback/google` como callback OAuth local. Em produção, use a URL HTTPS do ambiente. Gere um segredo aleatório para `NEXT_AUTH_SECRET`. Não publique credenciais.
+Autorize `http://localhost:3000/api/auth/callback/google` como callback OAuth local; em produção, use a URL HTTPS do aplicativo. Configure `NEXT_AUTH_SECRET` e os dados do banco. O seed em `prisma/seed.ts` é de exemplo e deve ser usado somente em desenvolvimento.
 
-A aplicação completa depende desses serviços externos; a demonstração não usa banco nem login. As reservas verificam a sessão no servidor, validam serviço e data futura e checam conflitos em uma transação serializável. Cancelamentos são restritos ao dono da reserva. Conflitos concorrentes podem exigir nova tentativa pelo usuário.
+### Estrutura e validação
 
-## Estrutura
-
-- `app/(home)/`: página inicial e busca.
-- `app/barbershops/`: listagem, detalhes e ações de reserva.
-- `app/bookings/`: agendamentos do usuário.
-- `app/_components/`: componentes compartilhados.
-- `prisma/`: modelos, migrations e seed.
-- `demo/`: demonstração pública independente.
-
-## Validação
+- `app/(home)/`: início e busca; `app/barbershops/`: listagem, detalhes e reservas.
+- `app/bookings/`: histórico do usuário; `app/_components/`: interface compartilhada.
+- `prisma/`: modelos, migrações e seed; `demo/`: protótipo estático legado.
 
 ```bash
 npx tsc --noEmit
@@ -48,12 +47,24 @@ npm run lint
 npm run build
 ```
 
-O build e a navegação completa precisam das variáveis e do banco configurados. A demo pode ser validada sem esses serviços.
+### Evolução comercial
+
+A versão em desenvolvimento na [PR #2](https://github.com/renanfrontend/barbershop/pull/2) mantém a identidade visual e adiciona gestão de unidades, profissionais, disponibilidade, painel do proprietário e avisos por e-mail. **Esses recursos ainda não estão no aplicativo publicado.** A migração do banco e as configurações de produção devem ser verificadas antes da publicação.
+
+### Contato e autoria
+
+Desenvolvimento e evolução: **Renan Augusto dos Santos**. Para adaptar o aplicativo a uma barbearia ou conversar sobre implantação, escreva para [contato@renanaugusto.com.br](mailto:contato@renanaugusto.com.br). Outros canais: [GitHub](https://github.com/renanfrontend/barbershop) e [LinkedIn](https://www.linkedin.com/in/renan-augusto-santos/). Para dúvidas sobre uma reserva, procure o contato da própria barbearia exibido no aplicativo.
+
+O projeto partiu de um exercício educacional Full Stack Week. Bibliotecas e materiais de terceiros conservam seus respectivos direitos e licenças.
 
 ## English
 
-Barbershop discovery and booking application based on the Full Stack Week educational project, built with Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL and NextAuth.
+RENANHARD Barber is a dark and purple barbershop discovery and booking application based on a Full Stack Week educational project. Customers can sign in with Google, browse services, make a booking and see their appointments. Built with Next.js, React, TypeScript, Tailwind CSS, NextAuth, Prisma and PostgreSQL.
 
-The [public demo](https://renanaugusto.com.br/demos/barbershop/index.html) is a standalone responsive experience with search, service filters, date/time selection and cancellation. It uses fictional shops and browser-local simulated bookings. No real booking is submitted.
+**Links:** [Live application](https://barbershop-seven-pi.vercel.app) · [Portfolio](https://www.renanaugusto.com.br/pt-BR/projetos/barbershop) · [Source](https://github.com/renanfrontend/barbershop). The old portfolio demo redirects to the live application; the local `demo/` folder is a legacy static prototype with simulated data.
 
-For the full application, install dependencies, copy `.env.example` to `.env`, configure PostgreSQL and Google OAuth, run Prisma migrations/seed and start the development server. Authentication and ownership are checked on the server. The demo is mirrored in the portfolio repository; keep its HTML, CSS and JavaScript files synchronized.
+To run locally, use `npm ci`, configure `.env` from `.env.example`, run `npx prisma migrate deploy` against a local PostgreSQL database and start with `npm run dev`. Configure the Google OAuth callback and `NEXT_AUTH_SECRET`. Sample seed data is for development only.
+
+The commercial features in [PR #2](https://github.com/renanfrontend/barbershop/pull/2) are under development and are not live until the production database migration and deployment checks are complete.
+
+**Contact:** Renan Augusto dos Santos · [contato@renanaugusto.com.br](mailto:contato@renanaugusto.com.br) · [GitHub](https://github.com/renanfrontend/barbershop) · [LinkedIn](https://www.linkedin.com/in/renan-augusto-santos/). For an existing booking, contact the relevant barbershop. Third-party materials retain their own licenses.
